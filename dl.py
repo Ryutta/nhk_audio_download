@@ -23,18 +23,7 @@ def _dlm3u8(url,session=None,log=sys.stdout):
                         resdata+=res.content
         return resdata
 
-# def dlm3u8(url,fname):
-#         data=_dlm3u8(url)
-#         if not data:
-#                 return False
-#         with open(fname,"wb") as f:
-#                 f.write(data)
-
 def dlm3u8(url,fname):
-        command = 'ffmpeg -i '+url+' '+fname
+        # ffmpegのダウンロード最適化: 再接続オプションを追加して途切れを防止する
+        command = f'ffmpeg -y -reconnect 1 -reconnect_at_eof 1 -reconnect_streamed 1 -reconnect_delay_max 300 -i "{url}" "{fname}"'
         subprocess.call(command, shell=True)
-        # data=_dlm3u8(url)
-        # if not data:
-        #         return False
-        # with open(fname,"wb") as f:
-        #         f.write(data)
