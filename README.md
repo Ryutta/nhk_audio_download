@@ -33,6 +33,8 @@ pip install requests selenium
 
 以下のコマンドを実行するだけで、設定された番組の音声がダウンロードされます。
 
+ダウンロードされたmp3ファイルは、`main.py` を実行したフォルダ（カレントディレクトリ）に保存されます。
+
 ```bash
 python main.py
 ```
