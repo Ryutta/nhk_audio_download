@@ -25,5 +25,6 @@ def _dlm3u8(url,session=None,log=sys.stdout):
 
 def dlm3u8(url,fname):
         # ffmpegのダウンロード最適化: 再接続オプションを追加して途切れを防止する
-        command = f'ffmpeg -y -reconnect 1 -reconnect_at_eof 1 -reconnect_streamed 1 -reconnect_delay_max 300 -i "{url}" "{fname}"'
+        # -reconnect_at_eof 1 を削除し、終了時の無限ループを防止。-c copy を追加し高速・無劣化で保存する。
+        command = f'ffmpeg -y -reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 300 -i "{url}" -c copy "{fname}"'
         subprocess.call(command, shell=True)
