@@ -22,7 +22,7 @@ for program in programs:
     name = program["name"]
     url = program["url"]
     print(f"=== {name} のダウンロードを開始します ===")
-
+    
     driver.get(url)
     sleep(3)
 
@@ -36,14 +36,14 @@ for program in programs:
                 date_str = s[:index+1].strip()
             else:
                 date_str = s.strip()
-
+            
             # ファイル名を「番組名_日付.mp3」にする
             fname = f"{name}_{date_str}"
             print(f"ダウンロード中: {fname}.mp3")
-
+            
             target2 = target.find_element(By.CSS_SELECTOR,"div.nol_audio_player_base")
             target_url = target2.get_attribute('data-hlsurl')
-
+            
             if target_url:
                 dl.dlm3u8(target_url, fname + '.mp3')
             else:
