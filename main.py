@@ -1,3 +1,4 @@
+import re
 from time import sleep
 import dl
 from selenium import webdriver
@@ -6,6 +7,10 @@ from selenium.webdriver.common.by import By
 options = webdriver.ChromeOptions()
 options.add_argument('--headless=new')
 options.add_argument('--incognito')
+options.add_argument('--disable-gpu')
+options.add_argument('--no-sandbox')
+options.add_argument('--disable-dev-shm-usage')
+options.add_argument('user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36')
 driver = webdriver.Chrome(options=options)
 
 # 4つの番組のURLと名称のリスト
@@ -37,8 +42,22 @@ for program in programs:
             else:
                 date_str = s.strip()
             
-            # ファイル名を「番組名_日付.mp3」にする
-            fname = f"{name}_{date_str}"
+            # 放映回数を取得する
+            episode_str = ""
+            try:
+                title_elem = target.find_element(By.CSS_SELECTOR, "h2.title")
+                m = re.search(r'\(\d+\)', title_elem.text)
+                if m:
+                    episode_str = m.group(0)
+            except Exception:
+                pass
+
+            # ファイル名を「番組名_日付_放映回数.mp3」にする
+            if episode_str:
+                fname = f"{name}_{date_str}_{episode_str}"
+            else:
+                fname = f"{name}_{date_str}"
+
             print(f"ダウンロード中: {fname}.mp3")
             
             target2 = target.find_element(By.CSS_SELECTOR,"div.nol_audio_player_base")
