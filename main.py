@@ -42,22 +42,28 @@ for program in programs:
             else:
                 date_str = s.strip()
             
-            # 放映回数を取得する
+            # 放映回数やサブタイトルを取得する
             episode_str = ""
             try:
                 title_elem = target.find_element(By.CSS_SELECTOR, "h2.title")
-                m = re.search(r'\(\d+\)', title_elem.text)
+                title_text = title_elem.text
+                m = re.search(r'\(\d+\)', title_text)
                 if m:
                     episode_str = m.group(0)
+                else:
+                    # (xx) がない場合は、最初の空白以降をサブタイトルとして取得する
+                    parts = re.split(r'[ 　]', title_text, 1)
+                    if len(parts) > 1:
+                        episode_str = parts[1].replace(' ', '_').replace('　', '_')
             except Exception:
                 pass
-
+            
             # ファイル名を「番組名_日付_放映回数.mp3」にする
             if episode_str:
                 fname = f"{name}_{date_str}_{episode_str}"
             else:
                 fname = f"{name}_{date_str}"
-
+            
             print(f"ダウンロード中: {fname}.mp3")
             
             target2 = target.find_element(By.CSS_SELECTOR,"div.nol_audio_player_base")
